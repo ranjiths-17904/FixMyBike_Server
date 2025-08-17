@@ -20,6 +20,10 @@
 - [ ] JWT secret is strong and unique
 - [ ] No hardcoded secrets in code
 
+### 5. Dependencies
+- [ ] Express version is 4.x (not 5.x for production stability)
+- [ ] All dependencies are compatible
+
 ## 🚀 Render Deployment Steps
 
 1. **Connect GitHub Repository**
@@ -51,10 +55,11 @@
 ## 🔍 Troubleshooting
 
 ### Common Issues:
-1. **404 Errors**: Check if routes are properly mounted
-2. **CORS Errors**: Verify CORS origins include client domain
-3. **Database Connection**: Check MongoDB connection string
-4. **Environment Variables**: Ensure all required vars are set
+1. **Express 5.x Compatibility**: Use Express 4.x for production stability
+2. **404 Errors**: Check if routes are properly mounted
+3. **CORS Errors**: Verify CORS origins include client domain
+4. **Database Connection**: Check MongoDB connection string
+5. **Environment Variables**: Ensure all required vars are set
 
 ### Testing Endpoints:
 - Root: `https://fixmybike-server.onrender.com/`
@@ -73,3 +78,9 @@ const resolvedBaseUrl = 'https://fixmybike-server.onrender.com';
 - Check Render logs for errors
 - Monitor MongoDB connection
 - Test all API endpoints after deployment
+
+## 🚨 Critical Fix Applied
+
+**Express Version**: Downgraded from 5.1.0 to 4.18.2 for production stability
+**Route Handler**: Fixed 404 handler to be compatible with Express 4.x
+**Deployment**: Use `npm start` (not `npm run dev`) for production

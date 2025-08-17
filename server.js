@@ -127,8 +127,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler for undefined routes
-app.use('*', (req, res) => {
+// 404 handler for undefined routes - must be last
+app.use((req, res) => {
   console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ 
     message: 'Route not found',
@@ -150,6 +150,8 @@ app.use('*', (req, res) => {
 const startServer = async () => {
   try {
     console.log("🔄 Starting server initialization...");
+    console.log("🔄 Node.js version:", process.version);
+    console.log("🔄 Express version:", require('express/package.json').version);
     
     // Connect to MongoDB
     console.log("🔄 Connecting to MongoDB...");
@@ -160,6 +162,7 @@ const startServer = async () => {
     console.log("🔄 Starting HTTP server...");
     const server = app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
       
       // Set up scheduled notifications after server is running
       setInterval(() => {
@@ -191,7 +194,7 @@ const startServer = async () => {
       }
     });
     
-    // console.log("Server initialization completed");
+    console.log("✅ Server initialization completed");
     
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
