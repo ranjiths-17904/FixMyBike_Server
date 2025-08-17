@@ -24,8 +24,16 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:3000', 'http://localhost:5173' , 'http://fixmybike.netlify.app'],
-  credentials: true
+  origin: [
+    'http://localhost:5174', 
+    'http://localhost:3000', 
+    'http://localhost:5173',
+    'https://fixmybike.netlify.app',
+    'https://www.fixmybike.netlify.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
@@ -53,6 +61,24 @@ const authenticateToken = (req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+
+// Root endpoint for debugging
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'FixMyBike Server is running', 
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      auth: '/api/auth',
+      bookings: '/api/bookings',
+      users: '/api/users',
+      notifications: '/api/notifications',
+      payments: '/api/payments',
+      health: '/api/health',
+      test: '/api/test'
+    }
+  });
+});
 
 // A minimal GET /api/auth/me (uses Authorization header)
 app.get('/api/auth/me', authenticateToken, async (req, res) => {
@@ -87,8 +113,37 @@ app.get('/api/test', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  console.error('Error details:', {
+    message: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  });
+  
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
+});
+
+// 404 handler for undefined routes
+app.use('*', (req, res) => {
+  console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ 
+    message: 'Route not found',
+    requestedUrl: req.originalUrl,
+    availableEndpoints: [
+      '/',
+      '/api/auth',
+      '/api/bookings', 
+      '/api/users',
+      '/api/notifications',
+      '/api/payments',
+      '/api/health',
+      '/api/test'
+    ]
+  });
 });
 
 // Start server only after MongoDB connection is established
