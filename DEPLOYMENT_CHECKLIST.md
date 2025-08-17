@@ -24,6 +24,11 @@
 - [ ] Express version is 4.x (not 5.x for production stability)
 - [ ] All dependencies are compatible
 
+### 6. API Paths
+- [ ] All client API calls use `/api/` prefix
+- [ ] Server routes are mounted at `/api/` prefix
+- [ ] No duplicate `/api/` paths in client configuration
+
 ## 🚀 Render Deployment Steps
 
 1. **Connect GitHub Repository**
@@ -56,10 +61,11 @@
 
 ### Common Issues:
 1. **Express 5.x Compatibility**: Use Express 4.x for production stability
-2. **404 Errors**: Check if routes are properly mounted
-3. **CORS Errors**: Verify CORS origins include client domain
-4. **Database Connection**: Check MongoDB connection string
-5. **Environment Variables**: Ensure all required vars are set
+2. **API Path Mismatch**: Ensure client calls `/api/auth/login`, not `/auth/login`
+3. **404 Errors**: Check if routes are properly mounted
+4. **CORS Errors**: Verify CORS origins include client domain
+5. **Database Connection**: Check MongoDB connection string
+6. **Environment Variables**: Ensure all required vars are set
 
 ### Testing Endpoints:
 - Root: `https://fixmybike-server.onrender.com/`
@@ -73,14 +79,37 @@ Ensure client `api.js` has:
 const resolvedBaseUrl = 'https://fixmybike-server.onrender.com';
 ```
 
+And all API calls use the correct prefix:
+```javascript
+// ✅ Correct
+api.post('/api/auth/login', data)
+api.get('/api/bookings')
+
+// ❌ Incorrect
+api.post('/auth/login', data)
+api.get('/bookings')
+```
+
 ## 🔧 Monitoring
 
 - Check Render logs for errors
 - Monitor MongoDB connection
 - Test all API endpoints after deployment
 
-## 🚨 Critical Fix Applied
+## 🚨 Critical Fixes Applied
 
 **Express Version**: Downgraded from 5.1.0 to 4.18.2 for production stability
 **Route Handler**: Fixed 404 handler to be compatible with Express 4.x
+**API Paths**: Fixed all client API calls to use `/api/` prefix
 **Deployment**: Use `npm start` (not `npm run dev`) for production
+
+## 🧪 Testing Checklist
+
+After deployment, test these endpoints:
+- [ ] Root endpoint (`/`)
+- [ ] Health check (`/api/health`)
+- [ ] Auth endpoints (`/api/auth/*`)
+- [ ] Booking endpoints (`/api/bookings/*`)
+- [ ] User endpoints (`/api/users/*`)
+- [ ] Notification endpoints (`/api/notifications/*`)
+- [ ] Payment endpoints (`/api/payments/*`)
