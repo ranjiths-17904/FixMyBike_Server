@@ -34,9 +34,11 @@ app.use(cors({
     'https://fixmybike-client.netlify.app'
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with', 'Accept', 'Origin']
 }));
+// Explicitly enable preflight for all routes
+app.options('*', cors());
 app.use(express.json());
 
 // Request logging middleware

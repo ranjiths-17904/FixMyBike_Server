@@ -259,6 +259,12 @@ const verifyOTPAndRegister = async (req, res) => {
     console.log('OTP verification successful');
 
     // Create new user with verified email
+    // Prevent duplicate accounts if verification retried
+    const existingUser = await User.findOne({ email: otpData.email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
     const newUser = new User({
       username: otpData.username,
       email: otpData.email,
