@@ -102,14 +102,56 @@ api.get('/bookings')
 **Route Handler**: Fixed 404 handler to be compatible with Express 4.x
 **API Paths**: Fixed all client API calls to use `/api/` prefix
 **Deployment**: Use `npm start` (not `npm run dev`) for production
+**Test Files**: Removed unnecessary test files from production deployment
+**Error Handling**: Improved API error handling and session management
+**Debug Logging**: Added comprehensive logging for troubleshooting
+
+## 🔧 Recent Fixes (Latest Deployment)
+
+### 1. API Path Corrections
+- ✅ Fixed missing `/api` prefix in customer Dashboard delete booking
+- ✅ Fixed missing `/api` prefix in owner BookingManagement status updates
+- ✅ Fixed missing `/api` prefix in owner BookingManagement work completion
+- ✅ Fixed missing `/api` prefix in owner BookingManagement receipt sending
+
+### 2. Session Management Improvements
+- ✅ Less aggressive session expiration handling
+- ✅ Added session validation function
+- ✅ Improved error logging and debugging
+- ✅ Better user experience for expired sessions
+
+### 3. Code Cleanup
+- ✅ Removed test-*.js files from production
+- ✅ Enhanced API error logging
+- ✅ Added request/response debugging
 
 ## 🧪 Testing Checklist
 
 After deployment, test these endpoints:
-- [ ] Root endpoint (`/`)
-- [ ] Health check (`/api/health`)
-- [ ] Auth endpoints (`/api/auth/*`)
-- [ ] Booking endpoints (`/api/bookings/*`)
-- [ ] User endpoints (`/api/users/*`)
-- [ ] Notification endpoints (`/api/notifications/*`)
-- [ ] Payment endpoints (`/api/payments/*`)
+- [x] Root endpoint (`/`) - ✅ Working
+- [x] Health check (`/api/health`) - ✅ Working
+- [ ] Auth endpoints (`/api/auth/*`) - Test with client
+- [ ] Booking endpoints (`/api/bookings/*`) - Test with client
+- [ ] User endpoints (`/api/users/*`) - Test with client
+- [ ] Notification endpoints (`/api/notifications/*`) - Test with client
+- [ ] Payment endpoints (`/api/payments/*`) - Test with client
+
+## 🐛 Troubleshooting Guide
+
+### If you still get 404 errors:
+1. Check browser console for exact API calls being made
+2. Verify all client API calls use `/api/` prefix
+3. Check if server is running and accessible
+4. Use the test-api.html page to verify endpoints
+
+### If you get session expired errors:
+1. Check if JWT token is valid
+2. Verify server JWT_SECRET is set correctly
+3. Check browser console for authentication errors
+4. Try logging in again
+
+### If API calls fail:
+1. Check network tab in browser dev tools
+2. Verify CORS is configured correctly
+3. Check server logs for errors
+4. Test endpoints manually using test-api.html

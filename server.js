@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Import routes
-dotenv.config()
+dotenv.config();
 const authRoutes = require('./routes/authRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -29,13 +29,25 @@ app.use(cors({
     'http://localhost:3000', 
     'http://localhost:5173',
     'https://fixmybike.netlify.app',
-    'https://www.fixmybike.netlify.app'
+    'https://www.fixmybike.netlify.app',
+    'https://fixmybike-client.onrender.com',
+    'https://fixmybike-client.netlify.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with']
+});
 app.use(express.json());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  console.log(`Headers:`, req.headers);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log(`Body:`, req.body);
+  }
+  next();
+});
 
 const PORT = process.env.PORT || 5001;
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/bikeServiceApp';
@@ -98,7 +110,14 @@ app.use('/api/payments', authenticateToken, paymentRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    port: PORT,
+    mongoStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
 // Test endpoint for debugging
@@ -130,9 +149,14 @@ app.use((err, req, res, next) => {
 // 404 handler for undefined routes - must be last
 app.use((req, res) => {
   console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
+  console.log(`Request headers:`, req.headers);
+  console.log(`Request body:`, req.body);
+  
   res.status(404).json({ 
     message: 'Route not found',
     requestedUrl: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString(),
     availableEndpoints: [
       '/',
       '/api/auth',
