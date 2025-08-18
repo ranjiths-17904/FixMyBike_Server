@@ -173,20 +173,20 @@ app.use((req, res) => {
 // Start server only after MongoDB connection is established
 const startServer = async () => {
   try {
-    console.log("🔄 Starting server initialization...");
-    console.log("🔄 Node.js version:", process.version);
-    console.log("🔄 Express version:", require('express/package.json').version);
+    console.log("Starting server initialization...");
+    console.log("Node.js version:", process.version);
+    console.log("Express version:", require('express/package.json').version);
     
     // Connect to MongoDB
-    console.log("🔄 Connecting to MongoDB...");
+    console.log("Connecting to MongoDB...");
     await mongoose.connect(MONGO_URL);
-    console.log("✅ MongoDB connected");
+    console.log("MongoDB connected");
     
     // Start the server
-    console.log("🔄 Starting HTTP server...");
+    console.log("Starting HTTP server...");
     const server = app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       
       // Set up scheduled notifications after server is running
       setInterval(() => {
@@ -212,16 +212,16 @@ const startServer = async () => {
     
     // Add error handling for the server
     server.on('error', (error) => {
-      console.error('❌ Server error:', error);
+      console.error('Server error:', error);
       if (error.code === 'EADDRINUSE') {
         console.error(`Port ${PORT} is already in use`);
       }
     });
     
-    console.log("✅ Server initialization completed");
+    console.log("Server initialization completed");
     
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
+    console.error("MongoDB connection error:", error);
     process.exit(1);
   }
 };

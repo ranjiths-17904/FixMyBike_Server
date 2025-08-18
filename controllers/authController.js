@@ -30,14 +30,11 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // Create new user
     const newUser = new User({
       username,
       email,
-      password: hashedPassword,
+      password,
       role
     });
 
@@ -266,7 +263,7 @@ const verifyOTPAndRegister = async (req, res) => {
       username: otpData.username,
       email: otpData.email,
       mobile: otpData.phone, // Include phone number
-      password: await bcrypt.hash(password, 10),
+      password: password,
       emailVerified: true,
       role: 'customer'
     });
@@ -463,9 +460,8 @@ const resetPasswordWithOTP = async (req, res) => {
       });
     }
 
-    // Hash new password and update user
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
+    // Set new password (will be hashed by pre-save hook)
+    user.password = newPassword;
     user.emailOtp = { code: null, expiresAt: null };
 
     await user.save();
